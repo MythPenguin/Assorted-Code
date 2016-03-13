@@ -1,0 +1,86 @@
+	.file	"simple.c"
+	.intel_syntax noprefix
+	.text
+	.globl	f1
+	.type	f1, @function
+f1:
+.LFB0:
+	push	ebp
+	mov	ebp, esp
+	sub	esp, 4
+	mov	DWORD PTR [ebp-4], 10
+	mov	eax, DWORD PTR [ebp-4]
+	mov	edx, DWORD PTR [ebp+8]
+	add	eax, edx
+	leave
+	ret
+.LFE0:
+	.size	f1, .-f1
+	.section	.rodata
+.LC0:
+	.string	"%s\n"
+	.text
+	.globl	f2
+	.type	f2, @function
+f2:
+.LFB1:
+	push	ebp
+	mov	ebp, esp
+	sub	esp, 20
+	lea	eax, [ebp-10]
+	mov	DWORD PTR [esp], eax
+	call	gets
+	lea	eax, [ebp-10]
+	mov	DWORD PTR [esp+4], eax
+	mov	DWORD PTR [esp], OFFSET FLAT:.LC0
+	call	printf
+	leave
+	ret
+.LFE1:
+	.size	f2, .-f2
+	.section	.rodata
+	.align 4
+.LC1:
+	.string	"In main. Calling f1 with 15 as a param.\n"
+	.align 4
+.LC2:
+	.string	"Back in main from f1. Printing result.\n"
+.LC3:
+	.string	"Result of f1(15) is %d.\n"
+.LC4:
+	.string	"Still in main, calling f2\n"
+	.align 4
+.LC5:
+	.string	"Back in main. Exiting with 0 because I assume everything went okay.\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB2:
+	push	ebp
+	mov	ebp, esp
+	sub	esp, 12
+	mov	DWORD PTR [ebp-4], 0
+	mov	DWORD PTR [esp], OFFSET FLAT:.LC1
+	call	printf
+	mov	DWORD PTR [esp], 15
+	call	f1
+	mov	DWORD PTR [ebp-4], eax
+	mov	DWORD PTR [esp], OFFSET FLAT:.LC2
+	call	printf
+	mov	eax, DWORD PTR [ebp-4]
+	mov	DWORD PTR [esp+4], eax
+	mov	DWORD PTR [esp], OFFSET FLAT:.LC3
+	call	printf
+	mov	DWORD PTR [esp], OFFSET FLAT:.LC4
+	call	printf
+	call	f2
+	mov	DWORD PTR [esp], OFFSET FLAT:.LC5
+	call	printf
+	mov	eax, 0
+	leave
+	ret
+.LFE2:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.1) 4.8.4"
+	.section	.note.GNU-stack,"",@progbits
